@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.common.util;
+package com.ltsllc.commons.util;
 
 import java.security.SecureRandom;
 import java.util.Random;

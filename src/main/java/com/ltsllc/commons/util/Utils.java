@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.common.util;
+package com.ltsllc.commons.util;
 
 
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -426,7 +426,8 @@ public class Utils {
     }
 
     public static byte[] toBytes(long value) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES);
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.putLong(value);
         return byteBuffer.array();
     }
