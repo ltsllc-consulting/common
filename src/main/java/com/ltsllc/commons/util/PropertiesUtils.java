@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.common.util;
+package com.ltsllc.commons.util;
 
 import java.io.*;
 import java.util.*;
@@ -61,7 +61,13 @@ public class PropertiesUtils {
      * @param p The properties object to log.
      */
     public static String toString (Properties p) {
-        Object[] names = p.stringPropertyNames().toArray();
+        Enumeration namesEnum = p.propertyNames();
+        List<String> namesList = new ArrayList<String>();
+        while (namesEnum.hasMoreElements()) {
+            namesList.add((String) namesEnum.nextElement());
+        }
+        String[] names = new String[namesList.size()];
+        namesList.toArray(names);
         Arrays.sort(names);
 
         PrintWriter printWriter = null;
@@ -132,12 +138,17 @@ public class PropertiesUtils {
      * @return p1 modified as outlined in the description.
      */
     public static Properties merge(Properties p1, Properties p2) {
-        for (String name : p2.stringPropertyNames()) {
-            if (null == p1.getProperty(name))
-                p1.setProperty(name, p2.getProperty(name));
+        Properties result = p1;
+
+        Enumeration p2Enum = p2.propertyNames();
+        while (p2Enum.hasMoreElements()) {
+            String next = (String) p2Enum.nextElement();
+            if (result.getProperty(next) == null) {
+                result.setProperty(next, p2.getProperty(next));
+            }
         }
 
-        return p1;
+        return result;
     }
 
     /**
@@ -153,12 +164,14 @@ public class PropertiesUtils {
      * @return See above.
      */
     public static Properties overwrite(Properties p1, Properties p2) {
-        for (String name : p2.stringPropertyNames()) {
-            String value = p2.getProperty(name);
-            p1.setProperty(name, value);
+        Properties result = p1;
+        Enumeration p2Enum = p2.propertyNames();
+        while (p2Enum.hasMoreElements()) {
+            String next = (String) p2Enum.nextElement();
+            result.setProperty(next, p2.getProperty(next));
         }
 
-        return p1;
+        return result;
     }
 
     /**
@@ -167,13 +180,12 @@ public class PropertiesUtils {
      */
     public static Properties copy (Properties original) {
         Properties copy = new Properties();
-
-        if (null != original) {
-            for (String name : original.stringPropertyNames()) {
-                String value = original.getProperty(name);
-                copy.setProperty(name, value);
-            }
+        Enumeration originalEnum = original.propertyNames();
+        while (originalEnum.hasMoreElements()) {
+            String next = (String) originalEnum.nextElement();
+            copy.setProperty(next, original.getProperty(next));
         }
+
 
         return copy;
     }
@@ -203,12 +215,13 @@ public class PropertiesUtils {
      */
     public static List<Property> toPropertyList (Properties properties) {
         List<Property> list = new ArrayList<Property>(properties.size());
-        for (String name : properties.stringPropertyNames())
-        {
-            String value = properties.getProperty(name);
-            Property property = new Property(name, value);
+        Enumeration propertiesEnum = properties.propertyNames();
+        while (propertiesEnum.hasMoreElements()) {
+            String next = (String) propertiesEnum.nextElement();
+            Property property = new Property(next, properties.getProperty(next));
             list.add(property);
         }
+
 
         return list;
     }
