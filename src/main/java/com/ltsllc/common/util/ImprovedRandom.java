@@ -96,4 +96,15 @@ public class ImprovedRandom {
 
         return value;
     }
+
+    public int nextNonNegativeInt () {
+        setWasNegative(false);
+        int value = getRandom().nextInt();
+        if (value < 0) {
+            value = -1 * value;
+            setWasNegative(true);
+        }
+
+        return value;
+    }
 }
