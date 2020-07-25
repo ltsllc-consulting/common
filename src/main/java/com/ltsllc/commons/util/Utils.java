@@ -33,9 +33,6 @@ import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-import org.bouncycastle.pkcs.PKCS10CertificationRequest;
-import org.bouncycastle.pkcs.PKCS10CertificationRequestHolder;
-import sun.security.pkcs10.PKCS10;
 import sun.security.x509.X500Name;
 
 import javax.crypto.Cipher;
@@ -43,7 +40,6 @@ import javax.crypto.CipherInputStream;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import javax.security.auth.Subject;
 import javax.servlet.ServletInputStream;
 import java.io.*;
 import java.math.BigInteger;
@@ -51,8 +47,12 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.cert.*;
+import java.security.cert.Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -426,8 +426,7 @@ public class Utils {
     }
 
     public static byte[] toBytes(long value) {
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES);
         byteBuffer.putLong(value);
         return byteBuffer.array();
     }
@@ -595,11 +594,11 @@ public class Utils {
                 .build(foo);
 
         X509CertificateHolder holder = myCertificateGenerator.build(sigGen);
-        X509CertificateStructure eeX509CertificateStructure = holder.toASN1Structure();
+        org.bouncycastle.asn1.x509.Certificate certificate = holder.toASN1Structure();
 
         CertificateFactory cf = CertificateFactory.getInstance("X.509", "BC");
 
-        InputStream is1 = new ByteArrayInputStream(eeX509CertificateStructure.getEncoded());
+        InputStream is1 = new ByteArrayInputStream(certificate.getEncoded());
         X509Certificate theCert = (X509Certificate) cf.generateCertificate(is1);
         is1.close();
         return theCert;
@@ -677,4 +676,34 @@ public class Utils {
         pemWriter.close();
         return stringWriter.toString();
     }
+
+    static public boolean stringsAreEquivalent(String s1, String s2) {
+        return s1.equalsIgnoreCase(s2);
+    }
+
+    static public boolean stringListsAreEquivalent  (List<String> l1, List<String> l2) {
+        if (l1.size() != l2.size())
+            return false;
+
+        for (int i = 0;i < l1.size(); i++) {
+            String s1 = (String) l1.get(i);
+            String s2 = (String) l2.get(i);
+            if (!(stringsAreEquivalent(s1,s2)))
+                return false;
+        }
+
+        return true;
+    }
+
+    static public List toEquivalentList (List list) {
+        List result = new ArrayList(list.size());
+
+        for (Object object : list)
+        {
+            result.add(object);
+        }
+
+        return result;
+    }
+
 }

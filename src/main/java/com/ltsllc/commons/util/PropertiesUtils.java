@@ -61,13 +61,7 @@ public class PropertiesUtils {
      * @param p The properties object to log.
      */
     public static String toString (Properties p) {
-        Enumeration namesEnum = p.propertyNames();
-        List<String> namesList = new ArrayList<String>();
-        while (namesEnum.hasMoreElements()) {
-            namesList.add((String) namesEnum.nextElement());
-        }
-        String[] names = new String[namesList.size()];
-        namesList.toArray(names);
+        Object[] names = p.stringPropertyNames().toArray();
         Arrays.sort(names);
 
         PrintWriter printWriter = null;
@@ -138,17 +132,12 @@ public class PropertiesUtils {
      * @return p1 modified as outlined in the description.
      */
     public static Properties merge(Properties p1, Properties p2) {
-        Properties result = p1;
-
-        Enumeration p2Enum = p2.propertyNames();
-        while (p2Enum.hasMoreElements()) {
-            String next = (String) p2Enum.nextElement();
-            if (result.getProperty(next) == null) {
-                result.setProperty(next, p2.getProperty(next));
-            }
+        for (String name : p2.stringPropertyNames()) {
+            if (null == p1.getProperty(name))
+                p1.setProperty(name, p2.getProperty(name));
         }
 
-        return result;
+        return p1;
     }
 
     /**
@@ -164,14 +153,12 @@ public class PropertiesUtils {
      * @return See above.
      */
     public static Properties overwrite(Properties p1, Properties p2) {
-        Properties result = p1;
-        Enumeration p2Enum = p2.propertyNames();
-        while (p2Enum.hasMoreElements()) {
-            String next = (String) p2Enum.nextElement();
-            result.setProperty(next, p2.getProperty(next));
+        for (String name : p2.stringPropertyNames()) {
+            String value = p2.getProperty(name);
+            p1.setProperty(name, value);
         }
 
-        return result;
+        return p1;
     }
 
     /**
@@ -180,12 +167,13 @@ public class PropertiesUtils {
      */
     public static Properties copy (Properties original) {
         Properties copy = new Properties();
-        Enumeration originalEnum = original.propertyNames();
-        while (originalEnum.hasMoreElements()) {
-            String next = (String) originalEnum.nextElement();
-            copy.setProperty(next, original.getProperty(next));
-        }
 
+        if (null != original) {
+            for (String name : original.stringPropertyNames()) {
+                String value = original.getProperty(name);
+                copy.setProperty(name, value);
+            }
+        }
 
         return copy;
     }
@@ -215,13 +203,12 @@ public class PropertiesUtils {
      */
     public static List<Property> toPropertyList (Properties properties) {
         List<Property> list = new ArrayList<Property>(properties.size());
-        Enumeration propertiesEnum = properties.propertyNames();
-        while (propertiesEnum.hasMoreElements()) {
-            String next = (String) propertiesEnum.nextElement();
-            Property property = new Property(next, properties.getProperty(next));
+        for (String name : properties.stringPropertyNames())
+        {
+            String value = properties.getProperty(name);
+            Property property = new Property(name, value);
             list.add(property);
         }
-
 
         return list;
     }

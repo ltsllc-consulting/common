@@ -17,6 +17,8 @@
 package com.ltsllc.commons.util;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -106,5 +108,29 @@ public class ImprovedRandom {
         }
 
         return value;
+    }
+
+    private String candidates = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`~!@#$%^&*()_-=+,./?;:'\"{}[]\\|,<.>";
+
+    public char nextChar () {
+        int index = nextIndex(candidates.length());
+        return candidates.charAt(index);
+    }
+
+    public String randomString (int length) {
+        char[] chars = new char[length];
+        for (int i = 0; i < length; i++) {
+            chars[i] = nextChar();
+        }
+
+        String result = chars.toString();
+        return result;
+    }
+
+    public boolean nextBoolean () {
+        boolean result;
+        int next = getRandom().nextInt();
+        result = ((next % 2) == 0);
+        return result;
     }
 }
