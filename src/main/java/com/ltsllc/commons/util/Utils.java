@@ -594,7 +594,7 @@ public class Utils {
                 .build(foo);
 
         X509CertificateHolder holder = myCertificateGenerator.build(sigGen);
-        org.bouncycastle.asn1.x509.Certificate certificate = holder.toASN1Structure();
+        org.bouncycastle.asn1.x509.X509CertificateStructure certificate = holder.toASN1Structure();
 
         CertificateFactory cf = CertificateFactory.getInstance("X.509", "BC");
 
