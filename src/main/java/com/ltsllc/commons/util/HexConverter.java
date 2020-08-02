@@ -1,5 +1,6 @@
 package com.ltsllc.commons.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -43,4 +44,24 @@ public class HexConverter {
         return stringBuilder2.toString();
     }
 
+    public static String toHexString (byte[] byteArray)
+    {
+        StringBuilder stringBuilder = new StringBuilder(4 * byteArray.length);
+        for (byte current : byteArray)
+        {
+            stringBuilder.append(current);
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public static byte[] toByteArray (String s)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (char c : s.toCharArray())
+        {
+            baos.write(c);
+        }
+        return baos.toByteArray();
+    }
 }
